@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let supabase = null;
     try {
         if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
-            const SUPABASE_URL = 'https://mchvkgmerllkczuodoeh.supabase.co/rest/v1/';
+            const SUPABASE_URL = 'https://mchvkgmerllkczuodoeh.supabase.co';
             const SUPABASE_KEY = 'sb_publishable_4Eg7qVwZ-CMbhuN_Mv6VkA_6pXyx98d';
             supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
             console.log('✅ Supabase client siap');
