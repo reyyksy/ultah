@@ -251,4 +251,4 @@ const firstSong = PLAYLIST[0];
 audio.src = firstSong.src;
 audio.load();
 musicToggle.innerHTML = `<span class="music-icon">▶️</span> ${firstSong.title}`;
-// Jangan auto-play, biar user klik tombol dulu.
+// Jangan auto-play, biar user klik tombol dulu
