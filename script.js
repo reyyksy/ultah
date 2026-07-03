@@ -20,7 +20,6 @@ document.addEventListener('DOMContentLoaded', function () {
         card.classList.toggle('flipped');
         if (card.classList.contains('flipped')) {
             openBtn.textContent = '📖 Tutup';
-            // Panggil fungsi render setelah flip jika perlu
             if (typeof renderMessages === 'function') {
                 renderMessages();
             }
@@ -180,75 +179,74 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-// ----- PLAYLIST (URUTAN TETAP) -----
-const PLAYLIST = [
-    { src: 'assets/music-1.mp3', title: '🎵 Lagu Pertama' },
-    { src: 'assets/music-2.mp3', title: '🎶 Lagu Kedua' },
-    { src: 'assets/music-3.mp3', title: '🎧 Lagu Ketiga' }
-];
+    // ----- PLAYLIST (URUTAN TETAP) -----
+    const PLAYLIST = [
+        { src: 'assets/music-1.mp3', title: '🎵 Lagu Pertama' },
+        { src: 'assets/music-2.mp3', title: '🎶 Lagu Kedua' },
+        { src: 'assets/music-3.mp3', title: '🎧 Lagu Ketiga' }
+    ];
 
-let currentIndex = 0;      // indeks lagu saat ini (0,1,2)
-let isPlaying = false;
+    let currentIndex = 0;
+    let isPlaying = false;
 
-// ----- FUNGSI PUTAR LAGU BERDASARKAN INDEX -----
-function playSong(index) {
-    const song = PLAYLIST[index];
-    audio.src = song.src;
-    audio.load();
-    audio.play()
-        .then(() => {
-            isPlaying = true;
-            musicToggle.classList.add('playing');
-            musicToggle.innerHTML = `<span class="music-icon">🔊</span> ${song.title}`;
-        })
-        .catch(() => {
-            isPlaying = false;
-            musicToggle.classList.remove('playing');
-            musicToggle.innerHTML = '<span class="music-icon">🔇</span> Lagu Error';
-        });
-}
-
-// ----- FUNGSI PINDAM KE LAGU BERIKUTNYA (SEQUENTIAL) -----
-function nextSong() {
-    currentIndex = (currentIndex + 1) % PLAYLIST.length; // 0->1->2->0
-    playSong(currentIndex);
-}
-
-// ----- SAAT LAGU SELESAI -----
-audio.addEventListener('ended', function () {
-    if (isPlaying) {
-        nextSong(); // otomatis ke lagu berikutnya
-    }
-});
-
-// ----- TOMBOL TOGGLE PLAY/PAUSE -----
-musicToggle.addEventListener('click', function () {
-    if (audio.paused) {
-        // Jika sedang pause, lanjutkan putar (dengan lagu yang sama)
+    // ----- FUNGSI PUTAR LAGU BERDASARKAN INDEX -----
+    function playSong(index) {
+        const song = PLAYLIST[index];
+        audio.src = song.src;
+        audio.load();
         audio.play()
             .then(() => {
                 isPlaying = true;
-                this.classList.add('playing');
-                const title = PLAYLIST[currentIndex].title;
-                this.innerHTML = `<span class="music-icon">🔊</span> ${title}`;
+                musicToggle.classList.add('playing');
+                musicToggle.innerHTML = `<span class="music-icon">🔊</span> ${song.title}`;
             })
             .catch(() => {
-                // Jika error, coba mulai dari awal lagu
-                playSong(currentIndex);
+                isPlaying = false;
+                musicToggle.classList.remove('playing');
+                musicToggle.innerHTML = '<span class="music-icon">🔇</span> Lagu Error';
             });
-    } else {
-        audio.pause();
-        isPlaying = false;
-        this.classList.remove('playing');
-        this.innerHTML = '<span class="music-icon">🔇</span> Putar Lagu';
     }
-});
 
-// ----- INISIALISASI MUSIK SAAT PERTAMA LOAD -----
-// Mulai dari lagu pertama (index 0)
-currentIndex = 0;
-const firstSong = PLAYLIST[0];
-audio.src = firstSong.src;
-audio.load();
-musicToggle.innerHTML = `<span class="music-icon">▶️</span> ${firstSong.title}`;
-// Jangan auto-play, biar user klik tombol dulu
+    // ----- FUNGSI PINDAM KE LAGU BERIKUTNYA (SEQUENTIAL) -----
+    function nextSong() {
+        currentIndex = (currentIndex + 1) % PLAYLIST.length;
+        playSong(currentIndex);
+    }
+
+    // ----- SAAT LAGU SELESAI -----
+    audio.addEventListener('ended', function () {
+        if (isPlaying) {
+            nextSong();
+        }
+    });
+
+    // ----- TOMBOL TOGGLE PLAY/PAUSE -----
+    musicToggle.addEventListener('click', function () {
+        if (audio.paused) {
+            audio.play()
+                .then(() => {
+                    isPlaying = true;
+                    this.classList.add('playing');
+                    const title = PLAYLIST[currentIndex].title;
+                    this.innerHTML = `<span class="music-icon">🔊</span> ${title}`;
+                })
+                .catch(() => {
+                    playSong(currentIndex);
+                });
+        } else {
+            audio.pause();
+            isPlaying = false;
+            this.classList.remove('playing');
+            this.innerHTML = '<span class="music-icon">🔇</span> Putar Lagu';
+        }
+    });
+
+    // ----- INISIALISASI MUSIK SAAT PERTAMA LOAD -----
+    currentIndex = 0;
+    const firstSong = PLAYLIST[0];
+    audio.src = firstSong.src;
+    audio.load();
+    musicToggle.innerHTML = `<span class="music-icon">▶️</span> ${firstSong.title}`;
+
+    console.log('🎂 Buku Tamu Ultah siap!');
+});
